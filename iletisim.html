@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İletişim - Kış Prime Suites</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-hotel"></i>
+                <span>Kış Prime Suites</span>
+            </div>
+            
+            <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <div class="mobile-menu" id="mobileMenu">
+                <a href="index.html" onclick="closeMenu()">Ana Sayfa</a>
+                <a href="rezervasyonlar.html" onclick="closeMenu()">Rezervasyonlarım</a>
+                <a href="hakkimizda.html" onclick="closeMenu()">Teknik Mimarı</a>
+                <a href="iletisim.html" style="color: var(--accent-color); font-weight: 600;" onclick="closeMenu()">İletişim</a>
+            </div>
+
+            <div class="nav-links">
+                <a href="index.html">Ana Sayfa</a>
+                <a href="rezervasyonlar.html">Rezervasyonlarım</a>
+                <a href="hakkimizda.html">Teknik Mimarı</a>
+                <a href="iletisim.html" style="color: var(--accent-color); font-weight: 600;">İletişim</a>
+            </div>
+            <div class="nav-social">
+                <a href="https://www.youtube.com" target="_blank" title="YouTube">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="https://www.instagram.com/totemdo_" target="_blank" title="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://www.linkedin.com" target="_blank" title="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <button class="theme-toggle" onclick="toggleTheme()" title="Tema Değiştir">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- iletişim formu -->
+    <section class="contact-section">
+        <div class="contact-background">
+            <div class="floating-shape shape-1"></div>
+            <div class="floating-shape shape-2"></div>
+            <div class="floating-shape shape-3"></div>
+        </div>
+        <div class="contact-container">
+            <div class="contact-header">
+                <div class="header-icon">
+                    <i class="fas fa-paper-plane"></i>
+                </div>
+                <h1 class="contact-title">
+                    <span class="title-highlight">İletişime</span> Geç
+                </h1>
+                <p class="contact-subtitle">
+                    <i class="fas fa-quote-left"></i>
+                    Soruların, önerilerin veya hata bildirimlerin için bize yazabilirsin. 
+                    Her mesajınız bizim için değerli!
+                    <i class="fas fa-quote-right"></i>
+                </p>
+            </div>
+            
+            <div class="contact-wrapper">
+                <div class="contact-form-wrapper">
+                    <div class="form-header">
+                        <h2><i class="fas fa-edit"></i> Mesaj Gönder</h2>
+                        <p>Formu doldur, mesajını gönder</p>
+                    </div>
+                    <form class="contact-form" onsubmit="sendFeedback(event)">
+                        <div class="form-group floating-label">
+                            <input type="text" id="name" name="name" placeholder=" " required>
+                            <label for="name">
+                                <i class="fas fa-user"></i> Ad Soyad
+                            </label>
+                            <span class="input-line"></span>
+                        </div>
+
+                        <div class="form-group floating-label">
+                            <input type="email" id="email" name="email" placeholder=" " required>
+                            <label for="email">
+                                <i class="fas fa-envelope"></i> E-posta
+                            </label>
+                            <span class="input-line"></span>
+                        </div>
+
+                        <div class="form-group floating-label">
+                            <select id="subject" name="subject" onchange="handleSubjectChange()" required>
+                                <option value="" disabled selected></option>
+                                <option value="genel">Genel Soru</option>
+                                <option value="rezervasyon">Rezervasyon Hakkında</option>
+                                <option value="oneri">Öneri & İyileştirme</option>
+                                <option value="sikayet">Şikayet</option>
+                                <option value="teknik">Teknik Sorun</option>
+                                <option value="isbirligi">İş Birliği</option>
+                                <option value="ozel">Özel Konu</option>
+                            </select>
+                            <label for="subject">
+                                <i class="fas fa-tag"></i> Konu
+                            </label>
+                            <span class="input-line"></span>
+                        </div>
+
+                        <div class="form-group floating-label" id="customSubjectGroup" style="display: none;">
+                            <input type="text" id="customSubject" name="customSubject" placeholder=" ">
+                            <label for="customSubject">
+                                <i class="fas fa-pencil-alt"></i> <span>Özel Konu Yazın</span>
+                            </label>
+                            <span class="input-line"></span>
+                        </div>
+
+                        <div class="form-group floating-label">
+                            <textarea id="message" name="message" rows="6" placeholder=" " required></textarea>
+                            <label for="message">
+                                <i class="fas fa-comment-alt"></i> Mesajınız
+                            </label>
+                            <span class="input-line"></span>
+                        </div>
+
+                        <button type="submit" class="submit-btn">
+                            <span>Gönder</span>
+                            <i class="fas fa-paper-plane"></i>
+                            <div class="btn-ripple"></div>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="contact-info-wrapper">
+                    <div class="info-header">
+                        <h2><i class="fas fa-info-circle"></i> İletişim Bilgileri</h2>
+                        <p>Bize ulaşmanın farklı yolları</p>
+                    </div>
+                    <div class="contact-info">
+                        <div class="info-card card-1">
+                            <div class="card-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>E-posta</h3>
+                                <a href="mailto:info@kprimesuites.com">info@kprimesuites.com</a>
+                            </div>
+                            <div class="card-shine"></div>
+                        </div>
+                        <div class="info-card card-2">
+                            <div class="card-icon">
+                                <i class="fab fa-discord"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>Discord</h3>
+                                <a href="#">Topluluğa Katıl</a>
+                            </div>
+                            <div class="card-shine"></div>
+                        </div>
+                        <div class="info-card card-3">
+                            <div class="card-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>Telefon</h3>
+                                <a href="tel:+905314866552">+90 531 486 65 52</a>
+                            </div>
+                            <div class="card-shine"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Kış Prime Suites. Tüm hakları saklıdır.</p>
+            <p>Baş Geliştirici: <strong>Umut KIŞ</strong> | İçerik Editörü: <strong>Burak Emenli</strong></p>
+            <div class="footer-social">
+                <a href="https://www.youtube.com" target="_blank"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.instagram.com/totemdo_" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.linkedin.com" target="_blank"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        function handleSubjectChange() {
+            const subjectSelect = document.getElementById('subject');
+            const customSubjectGroup = document.getElementById('customSubjectGroup');
+            const customSubjectInput = document.getElementById('customSubject');
+            
+            if (subjectSelect.value === 'ozel') {
+                customSubjectGroup.classList.add('show');
+                customSubjectInput.setAttribute('required', 'required');
+                subjectSelect.removeAttribute('required');
+                // Focus için kısa bir gecikme
+                setTimeout(() => {
+                    customSubjectInput.focus();
+                }, 300);
+            } else {
+                customSubjectGroup.classList.remove('show');
+                customSubjectInput.removeAttribute('required');
+                customSubjectInput.value = '';
+                subjectSelect.setAttribute('required', 'required');
+            }
+        }
+
+        function sendFeedback(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const subjectSelect = document.getElementById('subject');
+            const customSubjectInput = document.getElementById('customSubject');
+            const message = document.getElementById('message').value;
+            
+            // Konu belirleme: Özel konu seçildiyse özel konuyu, değilse seçilen konuyu kullan
+            let subject;
+            if (subjectSelect.value === 'ozel') {
+                subject = customSubjectInput.value.trim();
+                if (!subject) {
+                    alert('Lütfen özel konunuzu yazın.');
+                    customSubjectInput.focus();
+                    return;
+                }
+                // Özel konu başına "Özel: " ekle
+                subject = 'Özel: ' + subject;
+            } else {
+                if (!subjectSelect.value) {
+                    alert('Lütfen bir konu seçin.');
+                    subjectSelect.focus();
+                    return;
+                }
+                // Seçilen konunun görünen metnini al
+                const selectedOption = subjectSelect.options[subjectSelect.selectedIndex];
+                subject = selectedOption.text;
+            }
+            
+            // Feedback'i localStorage'a kaydet
+            const feedback = {
+                id: Date.now(),
+                name: name,
+                email: email,
+                subject: subject,
+                message: message,
+                date: new Date().toLocaleString('tr-TR')
+            };
+            
+            let feedbacks = JSON.parse(localStorage.getItem('feedbacks') || '[]');
+            feedbacks.push(feedback);
+            localStorage.setItem('feedbacks', JSON.stringify(feedbacks));
+            
+            alert('Mesajınız başarıyla gönderildi! En kısa sürede size dönüş yapacağız.');
+            
+            // Formu temizle
+            event.target.reset();
+            // Özel konu alanını gizle
+            document.getElementById('customSubjectGroup').classList.remove('show');
+        }
+
+        function toggleMenu() {
+            const hamburger = document.getElementById('hamburger');
+            const mobileMenu = document.getElementById('mobileMenu');
+            hamburger.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+        }
+
+        function closeMenu() {
+            const hamburger = document.getElementById('hamburger');
+            const mobileMenu = document.getElementById('mobileMenu');
+            hamburger.classList.remove('active');
+            mobileMenu.classList.remove('active');
+        }
+
+        // Tema yükle
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTheme();
+        });
+    </script>
+</body>
+</html>

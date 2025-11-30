@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Rezervasyonlarım - Kış Prime Suites</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #e74c3c;
+            --accent-color: #3498db;
+            --text-color: #2c3e50;
+            --light-bg: #ecf0f1;
+            --white: #ffffff;
+            --shadow: 0 5px 15px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #34495e 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: var(--text-color);
+        }
+
+        .reservations-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .reservations-header {
+            text-align: center;
+            color: var(--white);
+            margin-bottom: 40px;
+        }
+
+        .reservations-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .reservations-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .reservations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .reservation-item {
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: var(--transition);
+            border-top: 4px solid var(--accent-color);
+        }
+
+        .reservation-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .reservation-item-header {
+            background: linear-gradient(135deg, var(--accent-color) 0%, #2980b9 100%);
+            color: var(--white);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .reservation-item-header h3 {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        .reservation-badge {
+            background: rgba(255,255,255,0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .reservation-item-body {
+            padding: 20px;
+        }
+
+        .reservation-info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--light-bg);
+        }
+
+        .reservation-info-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .reservation-info-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .reservation-info-value {
+            color: #555;
+            text-align: right;
+        }
+
+        .reservation-price {
+            font-size: 1.3rem;
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+
+        .reservation-notes {
+            background: var(--light-bg);
+            padding: 12px;
+            border-radius: 5px;
+            margin-top: 12px;
+            font-size: 0.9rem;
+            color: #555;
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .no-reservations {
+            background: var(--white);
+            padding: 60px 40px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            color: #7f8c8d;
+        }
+
+        .no-reservations i {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .no-reservations p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .no-reservations a {
+            display: inline-block;
+            padding: 10px 30px;
+            background: var(--accent-color);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: var(--transition);
+        }
+
+        .no-reservations a:hover {
+            background: #2980b9;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: var(--transition);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .back-button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a252f 0%, #0f1419 100%);
+        }
+
+        body.dark-mode .reservation-item {
+            background: #2c3e50;
+            border-top-color: var(--accent-color);
+        }
+
+        body.dark-mode .reservation-info-label {
+            color: #ecf0f1;
+        }
+
+        body.dark-mode .reservation-info-value {
+            color: #bdc3c7;
+        }
+
+        body.dark-mode .reservation-notes {
+            background: #34495e;
+            color: #bdc3c7;
+        }
+
+        body.dark-mode .no-reservations {
+            background: #2c3e50;
+            color: #bdc3c7;
+        }
+
+        @media (max-width: 768px) {
+            .reservations-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .reservations-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .reservation-info-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .reservation-info-value {
+                text-align: left;
+                margin-top: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="reservations-container">
+        <a class="back-button" href="index.html"><i class="fas fa-arrow-left"></i> Ana Sayfaya Dön</a>
+
+        <div class="reservations-header">
+            <h1><i class="fas fa-calendar-check"></i> Rezervasyonlarım</h1>
+            <p id="userInfo">Lütfen giriş yapınız</p>
+        </div>
+
+        <div id="reservationsRoot"></div>
+    </div>
+
+    <script>
+        // Detect and apply theme
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
+        }
+
+        function renderReservations() {
+            const root = document.getElementById('reservationsRoot');
+            const userInfo = document.getElementById('userInfo');
+            const currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+            const reservations = JSON.parse(localStorage.getItem('reservations')) || {};
+
+            if (!currentUser) {
+                root.innerHTML = `
+                    <div class="no-reservations">
+                        <i class="fas fa-lock"></i>
+                        <p>Giriş yapmadınız</p>
+                        <p style="font-size: 0.95rem; margin-bottom: 20px;">Rezervasyonlarınızı görmek için lütfen giriş yapın veya kayıt olun.</p>
+                        <a href="index.html">Giriş Yap / Kayıt Ol</a>
+                    </div>
+                `;
+                return;
+            }
+
+            userInfo.textContent = currentUser.username ? `Kullanıcı: ${currentUser.username}` : 'Giriş yapılmış';
+
+            let html = '';
+            let found = false;
+
+            Object.keys(reservations).forEach(roomId => {
+                const roomRes = reservations[roomId];
+                const details = roomRes.reservationDetails || [];
+                details.forEach(res => {
+                    if (res.user === currentUser.username) {
+                        found = true;
+                        const checkInDate = new Date(res.checkIn);
+                        const checkOutDate = new Date(res.checkOut);
+                        const nights = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+
+                        html += `
+                            <div class="reservation-item">
+                                <div class="reservation-item-header">
+                                    <h3>${res.roomName || 'Oda #' + roomId}</h3>
+                                    <span class="reservation-badge">${nights} Gece</span>
+                                </div>
+                                <div class="reservation-item-body">
+                                    <div class="reservation-info-row">
+                                        <span class="reservation-info-label"><i class="fas fa-door-open"></i> Giriş Tarihi</span>
+                                        <span class="reservation-info-value">${res.checkIn}</span>
+                                    </div>
+                                    <div class="reservation-info-row">
+                                        <span class="reservation-info-label"><i class="fas fa-sign-out-alt"></i> Çıkış Tarihi</span>
+                                        <span class="reservation-info-value">${res.checkOut}</span>
+                                    </div>
+                                    <div class="reservation-info-row">
+                                        <span class="reservation-info-label"><i class="fas fa-credit-card"></i> Toplam Tutar</span>
+                                        <span class="reservation-info-value reservation-price">₺${res.totalPrice}</span>
+                                    </div>
+                                    <div class="reservation-info-row">
+                                        <span class="reservation-info-label"><i class="fas fa-calendar"></i> Rezervasyon Tarihi</span>
+                                        <span class="reservation-info-value">${res.paymentDate || '-'}</span>
+                                    </div>
+                                    <div class="reservation-info-row">
+                                        <span class="reservation-info-label"><i class="fas fa-envelope"></i> E-Posta</span>
+                                        <span class="reservation-info-value">${res.paymentInfo && res.paymentInfo.email ? res.paymentInfo.email : '-'}</span>
+                                    </div>
+                                    ${res.notes ? `
+                                        <div class="reservation-notes">
+                                            <strong><i class="fas fa-sticky-note"></i> Notlar:</strong><br>
+                                            ${res.notes}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+            });
+
+            if (!found) {
+                root.innerHTML = `
+                    <div class="no-reservations">
+                        <i class="fas fa-inbox"></i>
+                        <p>Henüz hiç rezervasyonunuz yok</p>
+                        <p style="font-size: 0.95rem; margin-bottom: 20px;">Başlamak için odalarımızı keşfet ve bir rezervasyon oluştur.</p>
+                        <a href="index.html">Odaları Keşfet</a>
+                    </div>
+                `;
+            } else {
+                root.innerHTML = `<div class="reservations-grid">${html}</div>`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTheme();
+            renderReservations();
+        });
+    </script>
+</body>
+</html>

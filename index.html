@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kış Prime Suites - Premium Otel Rezervasyon Sitesi</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- navbarımız -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-hotel"></i>
+                <span>Kış Prime Suites</span>
+            </div>
+            
+            <!-- Hamburger Menu Button -->
+            <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <!-- Mobile Menu -->
+            <div class="mobile-menu" id="mobileMenu">
+                <a href="#" onclick="showHome(); closeMenu()">Ana Sayfa</a>
+                <a href="#" onclick="showRooms(); closeMenu()">Odalar</a>
+                <a href="#" onclick="showAbout(); closeMenu()">Hakkında</a>
+                <a href="rezervasyonlar.html" id="navReservationsLinkMobile" style="color: var(--accent-color); font-weight: 600; display: none;" onclick="closeMenu()">Rezervasyonlarım</a>
+                <a href="hakkimizda.horosptml" style="color: var(--secondary-color); font-weight: 600;" onclick="closeMenu()">Teknik Mimarı</a>
+                <div class="mobile-menu-divider"></div>
+                <button id="authBtnMobile" class="auth-btn" onclick="toggleAuthModal(); closeMenu()" style="width: 100%; margin: 10px 0;">Giriş Yap</button>
+                <button id="logoutBtnMobile" class="logout-btn" onclick="logout(); closeMenu()" style="display:none; width: 100%; margin: 10px 0;">Çıkış Yap</button>
+            </div>
+
+            <!-- Desktop Menu -->
+            <div class="nav-links">
+                <a href="#" onclick="showHome()">Ana Sayfa</a>
+                <a href="#" onclick="showRooms()">Odalar</a>
+                <a href="#" onclick="showAbout()">Hakkında</a>
+                <a href="rezervasyonlar.html" id="navReservationsLink" style="color: var(--accent-color); font-weight: 600; display: none;">Rezervasyonlarım</a>
+                <a href="hakkimizda.html" style="color: var(--secondary-color); font-weight: 600;">Teknik Mimarı</a>
+                <span class="nav-team-info">
+                    <a href="https://www.instagram.com/totemdo_" target="_blank" class="team-name">Umut KIŞ</a>
+                    <span class="team-separator">|</span>
+                    <a href="https://www.instagram.com/burakxqz0" target="_blank" class="team-name">Burak Emenli</a>
+                </span>
+            </div>
+            <div class="nav-social">
+                <a href="https://www.youtube.com" target="_blank" title="YouTube">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="https://www.instagram.com/totemdo_" target="_blank" title="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://www.linkedin.com" target="_blank" title="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <button class="theme-toggle" onclick="toggleTheme()" title="Tema Değiştir">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+            </div>
+            <div class="nav-auth">
+                <button id="authBtn" class="auth-btn" onclick="toggleAuthModal()">Giriş Yap</button>
+                <button id="logoutBtn" class="logout-btn" onclick="logout()" style="display:none; width: 100%; margin-top: 10px;">Çıkış Yap</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- home sectionı -->
+    <section id="home" class="home-section active">
+        <video autoplay muted loop class="bg-video">
+            <source src="pikavid.mp4.mp4" type="video/mp4">
+        </video>
+        <div class="hero">
+            <div class="hero-content">
+                <h1>Herkese Özel Unutulamaz Bir Deneyim</h1>
+                <p>En iyi fiyatlara, en kaliteli hizmet</p>
+                <button class="cta-btn" onclick="showRooms()">Odaları Keşfet</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- odalar(rooms) sectionı -->
+    <section id="rooms" class="rooms-section">
+        <div class="rooms-container">
+            <h2>Odalarımız</h2>
+            
+            <!-- filtrekeme işlemi -->
+            <div class="filter-section">
+                <label for="priceFilter">Bütçeye Göre Filtre:</label>
+                <select id="priceFilter" onchange="filterRooms()">
+                    <option value="all">Tümü</option>
+                    <option value="budget">Bütçe Dostu (₺0-₺500)</option>
+                    <option value="standard">Standart (₺500-₺1000)</option>
+                    <option value="premium">Premium (₺1000-₺2000)</option>
+                    <option value="luxury">Lüks (₺2000+)</option>
+                </select>
+            </div>
+
+            <!-- oda resmi, oda adı, oda fiyatı ve detaylar gibi özellikler -->
+            <div class="rooms-grid" id="roomsGrid"></div>
+
+            <!-- uzun bir oda listesinde kullanıcı yukarı çıkmadan sayfa değiştirebilsin diye footer kısmına yakın -->
+            <div class="pagination" id="paginationBottom"></div>
+        </div>
+    </section>
+
+    <!-- hakkında kısmı -->
+    <section id="about" class="about-section">
+        <div class="about-container">
+            <h2>Hakkımızda</h2>
+            <p>Kış Prime Suites, 2025 yılında misafirlerimize unutulmaz bir konaklama deneyimi sunmak amacıyla kuruldu.
+            Bizim için en önemli şey, kapımızdan içeri adım atan herkesin kendini evinde hissetmesi.
+            Farklı bütçelere ve ihtiyaçlara uygun oda seçeneklerimizle, her yaştan ve her aileden misafirimizi aynı özenle ağırlıyoruz.
+            Kış Prime Suites ailesi olarak sizi rahat ettirmek, konfor sağlamak ve güzel anılar biriktirmenize yardımcı olmak için buradayız.</p>
+            
+            <div class="team-info">
+                <div class="team-member">
+                    <h3>Baş Geliştirici</h3>
+                    <p><a href="https://github.com/ussms" target="_blank" class="team-link">Umut KIŞ</a></p>
+                </div>
+                <div class="team-member">
+                    <h3>İçerik Editörü</h3>
+                    <p><a href="https://github.com/h1perss" target="_blank" class="team-link">Burak Emenli</a></p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="iletisim.html" class="feedback-btn">
+                    <i class="fas fa-comment-dots"></i> Geri Bildirim Gönder
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ayak😈 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Kış Prime Suites. Tüm hakları saklıdır.</p>
+            <p>Baş Geliştirici: <strong>Umut KIŞ</strong> | İçerik Editörü: <strong>Burak Emenli</strong></p>
+            <div class="footer-social">
+                <a href="https://www.youtube.com" target="_blank"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.instagram.com/totemdo_" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.linkedin.com" target="_blank"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- giriş -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="toggleAuthModal()">&times;</span>
+            <h2>Giriş Yap</h2>
+            <form onsubmit="login(event)">
+                <input type="text" id="username" placeholder="Kullanıcı Adı" required>
+                <input type="password" id="password" placeholder="Şifre" required>
+                <button type="submit">Giriş Yap</button>
+                <p class="switch-auth">Hesabın yok mu? <a href="#" onclick="toggleSignup()">Kaydol</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- kaydol -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="toggleSignup()">&times;</span>
+            <h2>Kaydol</h2>
+            <form onsubmit="signup(event)">
+                <input type="text" id="signupUsername" placeholder="Kullanıcı Adı" required>
+                <input type="email" id="signupEmail" placeholder="Email" required>
+                <input type="password" id="signupPassword" placeholder="Şifre" required>
+                <input type="password" id="signupPasswordConfirm" placeholder="Şifre Tekrar" required>
+                <button type="submit">Kaydol</button>
+                <p class="switch-auth">Zaten hesabın var mı? <a href="#" onclick="toggleAuthModal(); toggleSignup();">Giriş Yap</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- oda detay -->
+    <div id="roomDetailModal" class="modal">
+        <div class="modal-content room-detail">
+            <span class="close" onclick="closeRoomDetail()">&times;</span>
+            <div id="roomDetail"></div>
+        </div>
+    </div>
+
+    <!-- admin paneli (coolhavali) -->
+    <div id="adminPanelModal" class="modal">
+        <div class="modal-content admin-panel">
+            <span class="close" onclick="closeAdminPanel()">&times;</span>
+            <h2>Admin Paneli</h2>
+            <div class="admin-rooms" id="adminRooms"></div>
+        </div>
+    </div>
+
+    <!-- rezercasyon -->
+    <div id="reservationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeReservation()"></span>
+            <h2>Rezervasyon Yap</h2>
+            <form onsubmit="makeReservation(event)">
+                <input type="hidden" id="reservationRoomId">
+                <input type="date" id="checkInDate" required>
+                <input type="date" id="checkOutDate" required>
+                <textarea id="notes" placeholder="Özel İstekler (İsteğe bağlı)" rows="4"></textarea>
+                <button type="submit">Rezervasyonu Onayla</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ödeme -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content payment-content">
+            <span class="close" onclick="closePayment()"></span>
+            <h2>Ödeme</h2>
+            <div class="payment-summary" id="paymentSummary"></div>
+            <form onsubmit="processPayment(event)" class="payment-form">
+                <div class="form-section">
+                    <h3>Kart Bilgileri</h3>
+                    <input type="text" id="cardholderName" placeholder="Kart Sahibinin Adı" required>
+                    <input type="text" id="cardNumber" placeholder="Kart Numarası (16 Haneli)" maxlength="19" required oninput="formatCardNumber(this)">
+                    <div class="card-details">
+                        <input type="text" id="expiryDate" placeholder="MM/YY" maxlength="5" required oninput="formatExpiryDate(this)">
+                        <input type="text" id="cvv" placeholder="CVV" maxlength="3" required>
+                    </div>
+                </div>
+                <div class="form-section">
+                    <h3>Fatura Adresi</h3>
+                    <input type="email" id="email" placeholder="Email" required>
+                    <input type="text" id="address" placeholder="Adres" required>
+                    <input type="text" id="city" placeholder="Şehir" required>
+                    <input type="text" id="zipCode" placeholder="Posta Kodu" required>
+                </div>
+                <button type="submit" class="payment-btn">Ödemeyi Tamamla</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
