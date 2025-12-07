@@ -7,13 +7,16 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        body {
+            background: var(--bg-color);
+            transition: background-color 0.3s ease;
+        }
+
         .tech-page {
             max-width: 1000px;
             margin: 0 auto;
             padding: 60px 20px;
-            background: var(--bg-color);
             min-height: 100vh;
-            transition: background 0.3s ease;
         }
 
         .tech-header {
@@ -241,8 +244,6 @@
             <!-- Mobile Menu -->
             <div class="mobile-menu" id="mobileMenu">
                 <a href="index.html" onclick="closeMenu()">Ana Sayfa</a>
-                <a href="index.html" onclick="closeMenu()">Odalar</a>
-                <a href="index.html" onclick="closeMenu()">Hakkında</a>
                 <a href="hakkimizda.html" style="color: var(--secondary-color); font-weight: 600;" onclick="closeMenu()">Teknik Mimarı</a>
                 <a href="iletisim.html" onclick="closeMenu()">İletişim</a>
                 <div class="mobile-menu-divider"></div>
@@ -255,9 +256,7 @@
 
             <!-- Desktop Menu -->
             <div class="nav-links">
-                <a href="index.html" onclick="window.location.href='index.html'">Ana Sayfa</a>
-                <a href="index.html" onclick="window.location.href='index.html'; setTimeout(() => showRooms(), 100)">Odalar</a>
-                <a href="index.html">Hakkında</a>
+                <a href="index.html">Ana Sayfa</a>
                 <a href="hakkimizda.html" style="color: var(--secondary-color); font-weight: 600;">Teknik Mimarı</a>
                 <a href="iletisim.html">İletişim</a>
                 <span class="nav-team-info">
