@@ -148,8 +148,8 @@ const itemsPerPage = 6;
 document.addEventListener('DOMContentLoaded', () => {
     initializeRooms();
     updateAuthUI();
-    showHome();
     loadTheme();
+    displayRooms(); // Odaları göster
 });
 
 // oda rezervasyon verilerini başlat
@@ -164,27 +164,22 @@ function initializeRooms() {
 
 // bölümlerin yönetimi
 function showHome() {
-    hideAllSections();
-    document.getElementById('home').classList.add('active');
-    currentPage = 1;
+    document.getElementById('home').scrollIntoView({ behavior: 'smooth' });
 }
 
 function showRooms() {
-    hideAllSections();
-    document.getElementById('rooms').classList.add('active');
+    document.getElementById('rooms').scrollIntoView({ behavior: 'smooth' });
     currentPage = 1;
     displayRooms();
 }
 
 function showAbout() {
-    hideAllSections();
-    document.getElementById('about').classList.add('active');
+    document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
 }
 
 function hideAllSections() {
-    document.getElementById('home').classList.remove('active');
-    document.getElementById('rooms').classList.remove('active');
-    document.getElementById('about').classList.remove('active');
+    // Artık kullanılmıyor ama uyumluluk için bırakıldı
+    document.getElementById('priceEdit').classList.remove('active');
 }
 
 function toggleAuthModal() {
@@ -236,22 +231,26 @@ function login(event) {
     // Umut Bey (admin) girişi
     if (username === 'admin' && password === '123') {
         currentAdmin = { username: 'admin', name: 'Umut Bey' };
+        currentUser = null; // Normal kullanıcı değil
         localStorage.setItem('currentAdmin', JSON.stringify(currentAdmin));
+        localStorage.removeItem('currentUser');
         updateAuthUI();
         toggleAuthModal();
-        showRooms();
-        alert('Hoşgeldiniz Umut Bey!');
+        displayRooms(); // Admin kontrollerini göster
+        showToast('Hoşgeldiniz Umut Bey! 👨‍💼', 'success');
         return;
     }
 
     // Burak Bey (admin) girişi
     if (username === 'admin' && password === '1234') {
         currentAdmin = { username: 'admin', name: 'Burak Bey' };
+        currentUser = null; // Normal kullanıcı değil
         localStorage.setItem('currentAdmin', JSON.stringify(currentAdmin));
+        localStorage.removeItem('currentUser');
         updateAuthUI();
         toggleAuthModal();
-        showRooms();
-        alert('Hoşgeldiniz Burak Bey!');
+        displayRooms(); // Admin kontrollerini göster
+        showToast('Hoşgeldiniz Burak Bey! 👨‍💼', 'success');
         return;
     }
 
@@ -259,12 +258,15 @@ function login(event) {
     const storedUsers = JSON.parse(localStorage.getItem('users')) || {};
     if (storedUsers[username] && storedUsers[username].password === password) {
         currentUser = { username: username, email: storedUsers[username].email };
+        currentAdmin = null; // Admin değil
         localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        localStorage.removeItem('currentAdmin');
         updateAuthUI();
         toggleAuthModal();
-        alert('Giriş başarılı hoşgeldiniz ' + username + '!');
+        displayRooms(); // Admin kontrollerini gizle
+        showToast('Hoşgeldiniz ' + username + '! 👋', 'success');
     } else {
-        alert('Kullanıcı adı veya şifre hatalı!');
+        showToast('Kullanıcı adı veya şifre hatalı!', 'error');
     }
 }
 
@@ -276,12 +278,12 @@ function signup(event) {
     const confirmPassword = document.getElementById('signupPasswordConfirm').value;
 
     if (username in users) {
-        alert('Bu kullanıcı adı zaten kullanılmakta!');
+        showToast('Bu kullanıcı adı zaten kullanılmakta!', 'error');
         return;
     }
 
     if (password !== confirmPassword) {
-        alert('Şifreler eşleşmiyor!');
+        showToast('Şifreler eşleşmiyor!', 'error');
         return;
     }
 
@@ -289,10 +291,13 @@ function signup(event) {
     localStorage.setItem('users', JSON.stringify(users));
 
     currentUser = { username: username, email: email };
+    currentAdmin = null; // Admin değil
     localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    localStorage.removeItem('currentAdmin');
     updateAuthUI();
     toggleSignup();
-    alert('Kayıt başarılı hoşgeldiniz ' + username + '!');
+    displayRooms(); // Admin kontrollerini gizle
+    showToast('Kayıt başarılı! Hoşgeldiniz ' + username + '! 🎉', 'success');
 }
 
 // ADMIN GİRİŞİ
@@ -315,14 +320,26 @@ function adminLogin(event) {
 
 // ÇIKIŞ YAP
 function logout() {
-    if (confirm('Çıkış yapmak istediğinizden emin misiniz?')) {
-        currentUser = null;
-        currentAdmin = null;
-        localStorage.removeItem('currentUser');
-        localStorage.removeItem('currentAdmin');
-        updateAuthUI();
-        showHome();
-    }
+    // Çıkış onay panelini göster
+    document.getElementById('logoutConfirmPanel').classList.add('active');
+}
+
+// Çıkış onayını kapat
+function closeLogoutConfirm() {
+    document.getElementById('logoutConfirmPanel').classList.remove('active');
+}
+
+// Çıkışı onayla
+function confirmLogout() {
+    currentUser = null;
+    currentAdmin = null;
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('currentAdmin');
+    updateAuthUI();
+    displayRooms(); // Admin kontrollerini gizle
+    closeLogoutConfirm();
+    showToast('Başarıyla çıkış yaptınız 👋', 'success');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // UI GÜNCELLE
@@ -333,6 +350,8 @@ function updateAuthUI() {
     const logoutBtnMobile = document.getElementById('logoutBtnMobile');
     const reservationsLink = document.getElementById('navReservationsLink');
     const reservationsLinkMobile = document.getElementById('navReservationsLinkMobile');
+    const messagesLink = document.getElementById('navMessagesLink');
+    const messagesLinkMobile = document.getElementById('navMessagesLinkMobile');
 
     if (currentUser) {
         authBtn.style.display = 'none';
@@ -343,6 +362,8 @@ function updateAuthUI() {
         logoutBtnMobile.textContent = `${currentUser.username} - Çıkış Yap`;
         if (reservationsLink) reservationsLink.style.display = 'inline-block';
         if (reservationsLinkMobile) reservationsLinkMobile.style.display = 'block';
+        if (messagesLink) messagesLink.style.display = 'none';
+        if (messagesLinkMobile) messagesLinkMobile.style.display = 'none';
     } else if (currentAdmin) {
         authBtn.style.display = 'none';
         logoutBtn.style.display = 'block';
@@ -352,6 +373,8 @@ function updateAuthUI() {
         logoutBtnMobile.textContent = `${currentAdmin.name} - Çıkış Yap`;
         if (reservationsLink) reservationsLink.style.display = 'none';
         if (reservationsLinkMobile) reservationsLinkMobile.style.display = 'none';
+        if (messagesLink) messagesLink.style.display = 'inline-block';
+        if (messagesLinkMobile) messagesLinkMobile.style.display = 'block';
     } else {
         authBtn.style.display = 'block';
         logoutBtn.style.display = 'none';
@@ -360,19 +383,30 @@ function updateAuthUI() {
         authBtn.textContent = 'Giriş Yap';
         if (reservationsLink) reservationsLink.style.display = 'none';
         if (reservationsLinkMobile) reservationsLinkMobile.style.display = 'none';
+        if (messagesLink) messagesLink.style.display = 'none';
+        if (messagesLinkMobile) messagesLinkMobile.style.display = 'none';
     }
 }
 
 // ODALARI GÖSTER
 function displayRooms() {
     const filtered = filterByPrice();
-    const totalPages = Math.ceil(filtered.length / itemsPerPage);
     
-    const start = (currentPage - 1) * itemsPerPage;
-    const paginatedRooms = filtered.slice(start, start + itemsPerPage);
+    // Eğer filtrede oda yoksa mesaj göster
+    const noRoomsMessage = document.getElementById('noRoomsMessage');
+    const roomsGrid = document.getElementById('roomsGrid');
+    
+    if (filtered.length === 0) {
+        roomsGrid.style.display = 'none';
+        noRoomsMessage.style.display = 'flex';
+        return;
+    } else {
+        roomsGrid.style.display = 'grid';
+        noRoomsMessage.style.display = 'none';
+    }
 
     let html = '';
-    paginatedRooms.forEach(room => {
+    filtered.forEach(room => {
         const isAvailable = reservations[room.id].available;
         html += `
             <div class="room-card">
@@ -397,18 +431,36 @@ function displayRooms() {
                         </button>
                     </div>
                     ${currentAdmin ? `
-                        <div class="admin-controls">
-                            <h4>Admin Kontrolü</h4>
-                            <div class="admin-buttons">
-                                <button class="admin-toggle-btn" onclick="toggleRoomStatus(${room.id})" title="Durum Değiştir">
-                                    <i class="fas fa-power-off"></i> ${isAvailable ? 'Rezerveli Yap' : 'Boşalt'}
-                                </button>
-                                <button class="admin-edit-btn" onclick="editRoomPrice(${room.id})" title="Fiyat Düzenle">
-                                    <i class="fas fa-edit"></i> Fiyat Düzenle
-                                </button>
-                                <button class="admin-info-btn" onclick="viewReservations(${room.id})" title="Rezervasyonlar">
-                                    <i class="fas fa-calendar"></i> Rezervasyonlar
-                                </button>
+                        <div class="admin-badge">
+                            <i class="fas fa-crown"></i> Admin Modu
+                        </div>
+                        <div class="admin-panel-card">
+                            <div class="admin-action" onclick="toggleRoomStatus(${room.id})">
+                                <div class="admin-action-icon ${isAvailable ? 'status-available' : 'status-reserved'}">
+                                    <i class="fas fa-${isAvailable ? 'lock-open' : 'lock'}"></i>
+                                </div>
+                                <div class="admin-action-content">
+                                    <span class="admin-action-title">${isAvailable ? 'Rezerveli Yap' : 'Müsait Yap'}</span>
+                                    <span class="admin-action-desc">Oda durumunu değiştir</span>
+                                </div>
+                            </div>
+                            <div class="admin-action" onclick="editRoomPrice(${room.id})">
+                                <div class="admin-action-icon price-icon">
+                                    <i class="fas fa-tag"></i>
+                                </div>
+                                <div class="admin-action-content">
+                                    <span class="admin-action-title">Fiyat Düzenle</span>
+                                    <span class="admin-action-desc">₺${room.price}/Gece</span>
+                                </div>
+                            </div>
+                            <div class="admin-action" onclick="viewReservations(${room.id})">
+                                <div class="admin-action-icon info-icon">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div class="admin-action-content">
+                                    <span class="admin-action-title">Rezervasyonlar</span>
+                                    <span class="admin-action-desc">Detayları görüntüle</span>
+                                </div>
                             </div>
                         </div>
                     ` : ''}
@@ -418,45 +470,42 @@ function displayRooms() {
     });
 
     document.getElementById('roomsGrid').innerHTML = html;
-    displayPagination(totalPages);
 }
 
 function filterByPrice() {
     let filtered = rooms;
     
-    if (currentFilter !== 'all') {
-        filtered = rooms.filter(room => room.budget === currentFilter);
+    const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
+    const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+    
+    // Eğer min veya max girilmişse filtrele
+    if (minPrice > 0 || maxPrice < Infinity) {
+        filtered = rooms.filter(room => {
+            return room.price >= minPrice && room.price <= maxPrice;
+        });
     }
 
     return filtered;
 }
 
 function filterRooms() {
-    currentFilter = document.getElementById('priceFilter').value;
     currentPage = 1;
     displayRooms();
 }
 
-function displayPagination(totalPages) {
-    let html = '';
-    for (let i = 1; i <= totalPages; i++) {
-        html += `<button class="${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
-    }
-    
-    document.getElementById('paginationBottom').innerHTML = html;
+function clearPriceFilter() {
+    document.getElementById('minPrice').value = '';
+    document.getElementById('maxPrice').value = '';
+    filterRooms();
 }
 
-function goToPage(page) {
-    currentPage = page;
-    displayRooms();
-    window.scrollTo(0, 0);
-}
+// Sayfalama kaldırıldı - Tüm odalar tek sayfada gösteriliyor
 
 // ODA DETAYLARI
 function viewRoomDetail(roomId) {
     const room = rooms.find(r => r.id === roomId);
     const isAvailable = reservations[room.id].available;
-    
+
     const html = `
         <div class="room-detail-content">
             <h3>${room.name}</h3>
@@ -473,16 +522,16 @@ function viewRoomDetail(roomId) {
                 <strong>Kategori:</strong> ${room.category}
             </div>
             <div class="detail-info">
-                <strong>Durum:</strong> ${isAvailable ? '<span style="color: green;">✓ Müsait</span>' : '<span style="color: red;">✗ Rezerveli</span>'}
+                <strong>Durum:</strong> ${isAvailable ? '<span class="status-available">✓ Müsait</span>' : '<span class="status-reserved">✗ Rezerveli</span>'}
             </div>
             
             <div class="detail-info">
                 <strong>Özellikleri:</strong><br>
-                ${room.features.map(f => `<span style="display: inline-block; margin: 5px; padding: 5px 10px; background: #e8f4f8; border-radius: 3px;">✓ ${f}</span>`).join('')}
+                ${room.features.map(f => `<span class="feature-badge">✓ ${f}</span>`).join('')}
             </div>
         </div>
     `;
-    
+
     document.getElementById('roomDetail').innerHTML = html;
     document.getElementById('roomDetailModal').classList.add('active');
 }
@@ -490,11 +539,11 @@ function viewRoomDetail(roomId) {
 // RESERVASYONu KONTROL ET
 function checkLogin(roomId) {
     if (!currentUser) {
-        alert('Lütfen rezervasyon yapmak için giriş yapınız!');
+        showToast('Lütfen rezervasyon yapmak için giriş yapınız!', 'warning');
         toggleAuthModal();
         return;
     }
-    
+
     openReservation(roomId);
 }
 
@@ -509,21 +558,21 @@ function openReservation(roomId) {
 // RESERVASYONu YAP
 function makeReservation(event) {
     event.preventDefault();
-    
+
     const roomId = document.getElementById('reservationRoomId').value;
     const checkIn = document.getElementById('checkInDate').value;
     const checkOut = document.getElementById('checkOutDate').value;
     const notes = document.getElementById('notes').value;
-    
+
     if (new Date(checkOut) <= new Date(checkIn)) {
-        alert('Çıkış tarihi giriş tarihinden sonra olmalıdır!');
+        showToast('Çıkış tarihi giriş tarihinden sonra olmalıdır!', 'error');
         return;
     }
-    
+
     const room = rooms.find(r => r.id == roomId);
     const days = Math.ceil((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24));
     const totalPrice = days * room.price;
-    
+
     // Ödeme sayfasını aç
     closeReservation();
     openPayment(totalPrice, checkIn, checkOut, roomId);
@@ -535,12 +584,12 @@ function showAdminPanel() {
         alert('Yetkiniz yok!');
         return;
     }
-    
+
     let html = '';
     rooms.forEach(room => {
         const isAvailable = reservations[room.id].available;
         const reservationDetails = reservations[room.id].reservationDetails || [];
-        
+
         html += `
             <div class="admin-room-item">
                 <div class="admin-room-info">
@@ -563,7 +612,7 @@ function showAdminPanel() {
             </div>
         `;
     });
-    
+
     document.getElementById('adminRooms').innerHTML = html;
     document.getElementById('adminPanelModal').classList.add('active');
 }
@@ -582,30 +631,181 @@ function toggleRoomStatus(roomId) {
     displayRooms();
 }
 
-// ADMIN: FIYAT DÜZENLE
+// ADMIN: FIYAT DÜZENLE SAYFASI
 function editRoomPrice(roomId) {
-    const room = rooms.find(r => r.id == roomId);
-    const newPrice = prompt(`${room.name} için yeni fiyat girin (Şimdiki: ₺${room.price}):`, room.price);
-    
-    if (newPrice && !isNaN(newPrice) && newPrice > 0) {
-        room.price = parseInt(newPrice);
-        displayRooms();
-        alert('Fiyat güncellendi!');
-    } else if (newPrice !== null) {
-        alert('Geçerli bir fiyat girin!');
+    // Tüm section'ları gizle
+    document.querySelectorAll('section').forEach(section => {
+        section.classList.remove('active');
+    });
+
+    // Fiyat düzenleme sayfasını göster
+    const priceEditSection = document.getElementById('priceEdit');
+    priceEditSection.classList.add('active');
+
+    // Eğer belirli bir oda seçildiyse, sadece onu göster
+    if (roomId) {
+        showPriceEditForRoom(roomId);
+    } else {
+        showAllRoomsForPriceEdit();
     }
+}
+
+function showPriceEditForRoom(roomId) {
+    const room = rooms.find(r => r.id == roomId);
+    if (!room) return;
+
+    const html = `
+        <div class="price-edit-room-card">
+            <div class="price-edit-room-header">
+                <div class="price-edit-room-icon">${room.icon}</div>
+                <div class="price-edit-room-info">
+                    <h3>${room.name}</h3>
+                    <p class="price-edit-room-category">${room.category}</p>
+                </div>
+            </div>
+            <div class="price-edit-form">
+                <div class="price-edit-current">
+                    <label>Mevcut Fiyat</label>
+                    <div class="current-price">₺${room.price}/Gece</div>
+                </div>
+                <div class="price-edit-input-group">
+                    <label for="newPrice">Yeni Fiyat (₺)</label>
+                    <input type="number" id="newPrice" value="${room.price}" min="1" step="1" placeholder="Fiyat girin">
+                    <span class="price-input-hint">Gece başına fiyat</span>
+                </div>
+                <div class="price-edit-actions">
+                    <button class="price-save-btn" onclick="saveRoomPrice(${room.id})">
+                        <i class="fas fa-save"></i> Fiyatı Kaydet
+                    </button>
+                    <button class="price-cancel-btn" onclick="closePriceEdit()">
+                        <i class="fas fa-times"></i> İptal
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('priceEditContent').innerHTML = html;
+}
+
+function showAllRoomsForPriceEdit() {
+    let html = '<div class="price-edit-rooms-grid">';
+
+    rooms.forEach(room => {
+        html += `
+            <div class="price-edit-room-item">
+                <div class="price-edit-room-item-header">
+                    <div class="price-edit-room-item-icon">${room.icon}</div>
+                    <div>
+                        <h4>${room.name}</h4>
+                        <p class="price-edit-room-item-category">${room.category}</p>
+                    </div>
+                </div>
+                <div class="price-edit-room-item-price">
+                    <span class="current-price-label">Mevcut Fiyat:</span>
+                    <span class="current-price-value">₺${room.price}/Gece</span>
+                </div>
+                <div class="price-edit-room-item-input">
+                    <input type="number" id="price_${room.id}" value="${room.price}" min="1" step="1" placeholder="Yeni fiyat">
+                </div>
+                <button class="price-edit-room-item-btn" onclick="saveRoomPrice(${room.id})">
+                    <i class="fas fa-save"></i> Kaydet
+                </button>
+            </div>
+        `;
+    });
+
+    html += '</div>';
+    html += `
+        <div class="price-edit-bulk-actions">
+            <button class="price-save-all-btn" onclick="saveAllRoomPrices()">
+                <i class="fas fa-save"></i> Tüm Fiyatları Kaydet
+            </button>
+            <button class="price-cancel-btn" onclick="closePriceEdit()">
+                <i class="fas fa-times"></i> İptal
+            </button>
+        </div>
+    `;
+
+    document.getElementById('priceEditContent').innerHTML = html;
+}
+
+function saveRoomPrice(roomId) {
+    const room = rooms.find(r => r.id == roomId);
+    if (!room) return;
+
+    // Tek oda düzenleme modunda mı yoksa tüm odalar modunda mı kontrol et
+    const priceInput = document.getElementById('newPrice') || document.getElementById(`price_${roomId}`);
+    if (!priceInput) return;
+
+    const newPrice = parseInt(priceInput.value);
+
+    if (!newPrice || isNaN(newPrice) || newPrice <= 0) {
+        showToast('Geçerli bir fiyat girin!', 'error');
+        return;
+    }
+
+    room.price = newPrice;
+    saveRooms();
+    displayRooms();
+
+    // Başarı mesajı
+    const successMsg = document.createElement('div');
+    successMsg.className = 'price-edit-success';
+    successMsg.innerHTML = '<i class="fas fa-check-circle"></i> Fiyat başarıyla güncellendi!';
+    document.getElementById('priceEditContent').prepend(successMsg);
+
+    setTimeout(() => {
+        successMsg.remove();
+    }, 3000);
+}
+
+function saveAllRoomPrices() {
+    let updated = 0;
+
+    rooms.forEach(room => {
+        const priceInput = document.getElementById(`price_${room.id}`);
+        if (priceInput) {
+            const newPrice = parseInt(priceInput.value);
+            if (newPrice && !isNaN(newPrice) && newPrice > 0) {
+                room.price = newPrice;
+                updated++;
+            }
+        }
+    });
+
+    if (updated > 0) {
+        saveRooms();
+        displayRooms();
+
+        const successMsg = document.createElement('div');
+        successMsg.className = 'price-edit-success';
+        successMsg.innerHTML = `<i class="fas fa-check-circle"></i> ${updated} oda fiyatı başarıyla güncellendi!`;
+        document.getElementById('priceEditContent').prepend(successMsg);
+
+        setTimeout(() => {
+            successMsg.remove();
+        }, 3000);
+    } else {
+        alert('Güncellenecek fiyat bulunamadı!');
+    }
+}
+
+function closePriceEdit() {
+    document.getElementById('priceEdit').classList.remove('active');
+    showRooms();
 }
 
 // ADMIN: REZERVASYONLARI GÖR
 function viewReservations(roomId) {
     const room = rooms.find(r => r.id == roomId);
     const reservationDetails = reservations[roomId].reservationDetails || [];
-    
+
     if (reservationDetails.length === 0) {
         alert(`${room.name} için aktif rezervasyon yok.`);
         return;
     }
-    
+
     let reservationText = `${room.name} - Rezervasyonlar:\n\n`;
     reservationDetails.forEach((res, index) => {
         reservationText += `${index + 1}. Kullanıcı: ${res.user}\n`;
@@ -616,7 +816,7 @@ function viewReservations(roomId) {
         }
         reservationText += '\n';
     });
-    
+
     alert(reservationText);
 }
 
@@ -628,7 +828,7 @@ function saveReservations() {
 // TEMA YÖNETİMİ
 function setTheme(theme) {
     localStorage.setItem('theme', theme);
-    
+
     if (theme === 'dark') {
         document.body.classList.add('dark-mode');
         if (document.getElementById('darkModeBtn')) {
@@ -647,12 +847,12 @@ function setTheme(theme) {
 // ÖDEME MODAL İ AÇ/KAPAMA
 function openPayment(totalPrice, checkIn, checkOut, roomId) {
     const room = rooms.find(r => r.id == roomId);
-    
+
     const nights = Math.ceil((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24));
     const subtotal = totalPrice;
     const tax = Math.round(subtotal * 0.18); // KDV %18
     const total = subtotal + tax;
-    
+
     // Ödeme özeti oluştur
     let summaryHTML = `
         <div class="payment-item">
@@ -670,10 +870,10 @@ function openPayment(totalPrice, checkIn, checkOut, roomId) {
             <span class="total-price">₺${total}</span>
         </div>
     `;
-    
+
     document.getElementById('paymentSummary').innerHTML = summaryHTML;
     document.getElementById('paymentModal').classList.add('active');
-    
+
     // Ödeme verilerini sakla
     window.currentPayment = {
         roomId: roomId,
@@ -694,56 +894,56 @@ function closePayment() {
 function formatCardNumber(input) {
     let value = input.value.replace(/\s+/g, '');
     let formattedValue = '';
-    
+
     for (let i = 0; i < value.length; i++) {
         if (i > 0 && i % 4 === 0) {
             formattedValue += ' ';
         }
         formattedValue += value[i];
     }
-    
+
     input.value = formattedValue;
 }
 
 // SON KULLANIM TARİHİ FORMATLAMA
 function formatExpiryDate(input) {
     let value = input.value.replace(/\D/g, '');
-    
+
     if (value.length >= 2) {
         value = value.substring(0, 2) + '/' + value.substring(2, 4);
     }
-    
+
     input.value = value;
 }
 
 // ÖDEME İŞLEMİ
 function processPayment(event) {
     event.preventDefault();
-    
+
     const cardNumber = document.getElementById('cardNumber').value.replace(/\s+/g, '');
     const expiryDate = document.getElementById('expiryDate').value;
     const cvv = document.getElementById('cvv').value;
-    
+
     // Basit validasyon
     if (cardNumber.length !== 16 || !/^\d+$/.test(cardNumber)) {
-        alert('Geçerli bir kart numarası girin!');
+        showToast('Geçerli bir kart numarası girin!', 'error');
         return;
     }
-    
+
     if (!/^\d{2}\/\d{2}$/.test(expiryDate)) {
-        alert('Geçerli bir son kullanım tarihi girin (MM/YY)!');
+        showToast('Geçerli bir son kullanım tarihi girin (MM/YY)!', 'error');
         return;
     }
-    
+
     if (cvv.length !== 3 || !/^\d+$/.test(cvv)) {
-        alert('Geçerli bir CVV girin!');
+        showToast('Geçerli bir CVV girin!', 'error');
         return;
     }
-    
+
     // Ödeme işlemi
     const payment = window.currentPayment;
     const notes = document.getElementById('notes') ? document.getElementById('notes').value : '';
-    
+
     const reservation = {
         user: currentUser.username,
         checkIn: payment.checkIn,
@@ -759,7 +959,7 @@ function processPayment(event) {
         },
         paymentDate: new Date().toLocaleDateString('tr-TR')
     };
-    
+
     // Rezervasyonu kaydet
     if (!reservations[payment.roomId].reservationDetails) {
         reservations[payment.roomId].reservationDetails = [];
@@ -767,10 +967,10 @@ function processPayment(event) {
     reservations[payment.roomId].reservationDetails.push(reservation);
     reservations[payment.roomId].available = false;
     saveReservations();
-    
+
     // Başarı mesajı
     closePayment();
-    alert(`Ödeme başarılı! ${payment.total} TL tutarında ödeme alındı.\nRezervasyonunuz kaydedildi.`);
+    showToast(`Ödeme başarılı! ${payment.total} TL tutarında ödeme alındı. Rezervasyonunuz kaydedildi. 🎉`, 'success');
     showRooms();
 }
 
@@ -778,16 +978,36 @@ function processPayment(event) {
 function toggleTheme() {
     const body = document.body;
     const themeIcon = document.getElementById('themeIcon');
-    
+    const mobileThemeIcon = document.getElementById('mobileThemeIcon');
+    const mobileThemeText = document.getElementById('mobileThemeText');
+
     body.classList.toggle('dark-mode');
-    
+
     if (body.classList.contains('dark-mode')) {
-        themeIcon.classList.remove('fa-moon');
-        themeIcon.classList.add('fa-sun');
+        if (themeIcon) {
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        }
+        if (mobileThemeIcon) {
+            mobileThemeIcon.classList.remove('fa-moon');
+            mobileThemeIcon.classList.add('fa-sun');
+        }
+        if (mobileThemeText) {
+            mobileThemeText.textContent = 'Aydınlık Mod';
+        }
         localStorage.setItem('theme', 'dark');
     } else {
-        themeIcon.classList.remove('fa-sun');
-        themeIcon.classList.add('fa-moon');
+        if (themeIcon) {
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+        }
+        if (mobileThemeIcon) {
+            mobileThemeIcon.classList.remove('fa-sun');
+            mobileThemeIcon.classList.add('fa-moon');
+        }
+        if (mobileThemeText) {
+            mobileThemeText.textContent = 'Karanlık Mod';
+        }
         localStorage.setItem('theme', 'light');
     }
 }
@@ -796,12 +1016,21 @@ function loadTheme() {
     const savedTheme = localStorage.getItem('theme');
     const body = document.body;
     const themeIcon = document.getElementById('themeIcon');
-    
+    const mobileThemeIcon = document.getElementById('mobileThemeIcon');
+    const mobileThemeText = document.getElementById('mobileThemeText');
+
     if (savedTheme === 'dark') {
         body.classList.add('dark-mode');
         if (themeIcon) {
             themeIcon.classList.remove('fa-moon');
             themeIcon.classList.add('fa-sun');
+        }
+        if (mobileThemeIcon) {
+            mobileThemeIcon.classList.remove('fa-moon');
+            mobileThemeIcon.classList.add('fa-sun');
+        }
+        if (mobileThemeText) {
+            mobileThemeText.textContent = 'Aydınlık Mod';
         }
     } else {
         body.classList.remove('dark-mode');
@@ -809,5 +1038,211 @@ function loadTheme() {
             themeIcon.classList.remove('fa-sun');
             themeIcon.classList.add('fa-moon');
         }
+        if (mobileThemeIcon) {
+            mobileThemeIcon.classList.remove('fa-sun');
+            mobileThemeIcon.classList.add('fa-moon');
+        }
+        if (mobileThemeText) {
+            mobileThemeText.textContent = 'Karanlık Mod';
+        }
     }
+}
+
+// İLETİŞİM FORMU FONKSİYONLARI
+function handleSubjectChange() {
+    const subjectSelect = document.getElementById('contactSubject');
+    const customSubjectGroup = document.getElementById('customSubjectGroup');
+    const customSubjectInput = document.getElementById('customSubject');
+    
+    if (subjectSelect.value === 'ozel') {
+        customSubjectGroup.classList.add('show');
+        customSubjectInput.setAttribute('required', 'required');
+        subjectSelect.removeAttribute('required');
+        setTimeout(() => {
+            customSubjectInput.focus();
+        }, 300);
+    } else {
+        customSubjectGroup.classList.remove('show');
+        customSubjectInput.removeAttribute('required');
+        customSubjectInput.value = '';
+        subjectSelect.setAttribute('required', 'required');
+    }
+}
+
+function sendFeedback(event) {
+    event.preventDefault();
+    
+    const name = document.getElementById('contactName').value;
+    const email = document.getElementById('contactEmail').value;
+    const subjectSelect = document.getElementById('contactSubject');
+    const customSubjectInput = document.getElementById('customSubject');
+    const message = document.getElementById('contactMessage').value;
+    
+    let subject;
+    if (subjectSelect.value === 'ozel') {
+        subject = customSubjectInput.value.trim();
+        if (!subject) {
+            showToast('Lütfen özel konunuzu yazın.', 'warning');
+            customSubjectInput.focus();
+            return;
+        }
+        subject = 'Özel: ' + subject;
+    } else {
+        if (!subjectSelect.value) {
+            showToast('Lütfen bir konu seçin.', 'warning');
+            subjectSelect.focus();
+            return;
+        }
+        const selectedOption = subjectSelect.options[subjectSelect.selectedIndex];
+        subject = selectedOption.text;
+    }
+    
+    const feedback = {
+        id: Date.now(),
+        name: name,
+        email: email,
+        subject: subject,
+        message: message,
+        date: new Date().toLocaleString('tr-TR')
+    };
+    
+    let feedbacks = JSON.parse(localStorage.getItem('feedbacks') || '[]');
+    feedbacks.push(feedback);
+    localStorage.setItem('feedbacks', JSON.stringify(feedbacks));
+    
+    showToast('Mesajınız başarıyla gönderildi! En kısa sürede size dönüş yapacağız. 📧', 'success');
+    
+    event.target.reset();
+    document.getElementById('customSubjectGroup').classList.remove('show');
+}
+
+
+// TOAST NOTIFICATION SİSTEMİ
+function showToast(message, type = 'info') {
+    // Mevcut toast'ları temizle
+    const existingToasts = document.querySelectorAll('.toast-notification');
+    existingToasts.forEach(toast => toast.remove());
+
+    // Yeni toast oluştur
+    const toast = document.createElement('div');
+    toast.className = `toast-notification toast-${type}`;
+    
+    // İkon seç
+    let icon = '';
+    switch(type) {
+        case 'success':
+            icon = '<i class="fas fa-check-circle"></i>';
+            break;
+        case 'error':
+            icon = '<i class="fas fa-exclamation-circle"></i>';
+            break;
+        case 'warning':
+            icon = '<i class="fas fa-exclamation-triangle"></i>';
+            break;
+        default:
+            icon = '<i class="fas fa-info-circle"></i>';
+    }
+    
+    toast.innerHTML = `
+        ${icon}
+        <span>${message}</span>
+    `;
+    
+    document.body.appendChild(toast);
+    
+    // Animasyon için kısa gecikme
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 10);
+    
+    // 3 saniye sonra kaldır
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    }, 3000);
+}
+
+
+// MESAJLAR PANELİ (ADMIN)
+function openMessagesPanel() {
+    if (!currentAdmin) {
+        showToast('Bu özellik sadece adminler için!', 'error');
+        return;
+    }
+    
+    const modal = document.getElementById('messagesModal');
+    modal.classList.add('active');
+    displayMessages();
+}
+
+function closeMessagesPanel() {
+    const modal = document.getElementById('messagesModal');
+    modal.classList.remove('active');
+}
+
+function displayMessages() {
+    const feedbacks = JSON.parse(localStorage.getItem('feedbacks') || '[]');
+    const container = document.getElementById('messagesContainer');
+    
+    if (feedbacks.length === 0) {
+        container.innerHTML = `
+            <div class="no-messages">
+                <i class="fas fa-inbox"></i>
+                <h3>Henüz Mesaj Yok</h3>
+                <p>Müşterilerden gelen mesajlar burada görünecek</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // En yeni mesajlar önce
+    const sortedFeedbacks = feedbacks.sort((a, b) => b.id - a.id);
+    
+    let html = '';
+    sortedFeedbacks.forEach((feedback, index) => {
+        html += `
+            <div class="message-card" data-index="${index}">
+                <div class="message-header">
+                    <div class="message-sender">
+                        <i class="fas fa-user-circle"></i>
+                        <div>
+                            <strong>${feedback.name}</strong>
+                            <span class="message-email">${feedback.email}</span>
+                        </div>
+                    </div>
+                    <div class="message-date">
+                        <i class="far fa-clock"></i> ${feedback.date}
+                    </div>
+                </div>
+                <div class="message-subject">
+                    <i class="fas fa-tag"></i> ${feedback.subject}
+                </div>
+                <div class="message-body">
+                    ${feedback.message}
+                </div>
+                <div class="message-actions">
+                    <button class="message-delete-btn" onclick="deleteMessage(${feedback.id})">
+                        <i class="fas fa-trash"></i> Sil
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+
+function deleteMessage(messageId) {
+    if (!confirm('Bu mesajı silmek istediğinizden emin misiniz?')) {
+        return;
+    }
+    
+    let feedbacks = JSON.parse(localStorage.getItem('feedbacks') || '[]');
+    feedbacks = feedbacks.filter(f => f.id !== messageId);
+    localStorage.setItem('feedbacks', JSON.stringify(feedbacks));
+    
+    showToast('Mesaj silindi', 'success');
+    displayMessages();
 }
