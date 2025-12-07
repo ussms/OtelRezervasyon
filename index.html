@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,70 +8,104 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <!-- navbarımız -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo">
-                <i class="fas fa-hotel"></i>
-                <span>Kış Prime Suites</span>
+                <span class="logo-mark">K</span>
+                <span class="logo-text">Kış Prime Suites</span>
             </div>
-            
-            <!-- Hamburger Menu Button -->
+
+            <!-- Hamburger Menü Butonuı -->
             <button class="hamburger" id="hamburger" onclick="toggleMenu()">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
 
-            <!-- Mobile Menu -->
+            <!-- Mobil Menü -->
             <div class="mobile-menu" id="mobileMenu">
-                <a href="#" onclick="showHome(); closeMenu()">Ana Sayfa</a>
-                <a href="#" onclick="showRooms(); closeMenu()">Odalar</a>
-                <a href="#" onclick="showAbout(); closeMenu()">Hakkında</a>
-                <a href="rezervasyonlar.html" id="navReservationsLinkMobile" style="color: var(--accent-color); font-weight: 600; display: none;" onclick="closeMenu()">Rezervasyonlarım</a>
-                <a href="hakkimizda.horosptml" style="color: var(--secondary-color); font-weight: 600;" onclick="closeMenu()">Teknik Mimarı</a>
+                <a href="rezervasyonlar.html" id="navReservationsLinkMobile"
+                    style="color: var(--accent-color); font-weight: 600; display: none;"
+                    onclick="closeMenu()">Rezervasyonlarım</a>
+                <a href="#" id="navMessagesLinkMobile"
+                    style="color: #9b59b6; font-weight: 600; display: none;"
+                    onclick="openMessagesPanel(); closeMenu()">📧 Mesajlar</a>
+                <a href="hakkimizda.html" style="color: var(--secondary-color); font-weight: 600;"
+                    onclick="closeMenu()">Teknik Mimarı</a>
+                <a href="#contact" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'}); closeMenu();">İletişim</a>
                 <div class="mobile-menu-divider"></div>
-                <button id="authBtnMobile" class="auth-btn" onclick="toggleAuthModal(); closeMenu()" style="width: 100%; margin: 10px 0;">Giriş Yap</button>
-                <button id="logoutBtnMobile" class="logout-btn" onclick="logout(); closeMenu()" style="display:none; width: 100%; margin: 10px 0;">Çıkış Yap</button>
+                
+                <!-- Ekip İsimleri -->
+                <div class="mobile-team-info">
+                    <a href="https://www.instagram.com/totemdo_" target="_blank" class="mobile-team-name">
+                        <i class="fab fa-instagram"></i> Umut KIŞ
+                    </a>
+                    <a href="https://www.instagram.com/burakxqz0" target="_blank" class="mobile-team-name">
+                        <i class="fab fa-instagram"></i> Burak Emenli
+                    </a>
+                </div>
+                
+                <div class="mobile-menu-divider"></div>
+                
+                <!-- Tema Değiştirme -->
+                <div class="mobile-theme-toggle">
+                    <button class="mobile-theme-btn" onclick="toggleTheme()">
+                        <i class="fas fa-moon" id="mobileThemeIcon"></i>
+                        <span id="mobileThemeText">Karanlık Mod</span>
+                    </button>
+                </div>
+                
+                <div class="mobile-menu-divider"></div>
+                
+                <button id="authBtnMobile" class="auth-btn" onclick="toggleAuthModal(); closeMenu()"
+                    style="width: 100%; margin: 10px 0;">Giriş Yap</button>
+                <button id="logoutBtnMobile" class="logout-btn" onclick="logout(); closeMenu()"
+                    style="display:none; width: 100%; margin: 10px 0;">Çıkış Yap</button>
             </div>
 
-            <!-- Desktop Menu -->
+            <!-- Masaüstü Menu -->
             <div class="nav-links">
-                <a href="#" onclick="showHome()">Ana Sayfa</a>
-                <a href="#" onclick="showRooms()">Odalar</a>
-                <a href="#" onclick="showAbout()">Hakkında</a>
-                <a href="rezervasyonlar.html" id="navReservationsLink" style="color: var(--accent-color); font-weight: 600; display: none;">Rezervasyonlarım</a>
-                <a href="hakkimizda.html" style="color: var(--secondary-color); font-weight: 600;">Teknik Mimarı</a>
-                <span class="nav-team-info">
+                <a href="rezervasyonlar.html" id="navReservationsLink"
+                    style="color: var(--accent-color); display: none;">Rezervasyonlarım</a>
+                <a href="#" id="navMessagesLink"
+                    style="color: #9b59b6; display: none;"
+                    onclick="openMessagesPanel()">📧 Mesajlar</a>
+                <a href="hakkimizda.html" style="color: var(--secondary-color);">Teknik Mimarı</a>
+                <a href="#contact" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">İletişim</a>
+                <span class="nav-team-info"></span>
                     <a href="https://www.instagram.com/totemdo_" target="_blank" class="team-name">Umut KIŞ</a>
                     <span class="team-separator">|</span>
                     <a href="https://www.instagram.com/burakxqz0" target="_blank" class="team-name">Burak Emenli</a>
                 </span>
             </div>
-            <div class="nav-social">
-                <a href="https://www.youtube.com" target="_blank" title="YouTube">
-                    <i class="fab fa-youtube"></i>
-                </a>
-                <a href="https://www.instagram.com/totemdo_" target="_blank" title="Instagram">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                <a href="https://www.linkedin.com" target="_blank" title="LinkedIn">
-                    <i class="fab fa-linkedin"></i>
-                </a>
-                <button class="theme-toggle" onclick="toggleTheme()" title="Tema Değiştir">
-                    <i class="fas fa-moon" id="themeIcon"></i>
-                </button>
-            </div>
-            <div class="nav-auth">
-                <button id="authBtn" class="auth-btn" onclick="toggleAuthModal()">Giriş Yap</button>
-                <button id="logoutBtn" class="logout-btn" onclick="logout()" style="display:none; width: 100%; margin-top: 10px;">Çıkış Yap</button>
+            <div class="nav-right">
+                <div class="nav-social">
+                    <a href="https://www.youtube.com" target="_blank" title="YouTube">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a href="https://www.instagram.com/totemdo_" target="_blank" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.linkedin.com" target="_blank" title="LinkedIn">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <button class="theme-toggle" onclick="toggleTheme()" title="Tema Değiştir">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                </div>
+                <div class="nav-auth">
+                    <button id="authBtn" class="auth-btn" onclick="toggleAuthModal()">Giriş Yap</button>
+                    <button id="logoutBtn" class="logout-btn" onclick="logout()" style="display:none;">Çıkış Yap</button>
+                </div>
             </div>
         </div>
     </nav>
 
     <!-- home sectionı -->
-    <section id="home" class="home-section active">
+    <section id="home" class="home-section">
         <video autoplay muted loop class="bg-video">
             <source src="pikavid.mp4.mp4" type="video/mp4">
         </video>
@@ -78,7 +113,7 @@
             <div class="hero-content">
                 <h1>Herkese Özel Unutulamaz Bir Deneyim</h1>
                 <p>En iyi fiyatlara, en kaliteli hizmet</p>
-                <button class="cta-btn" onclick="showRooms()">Odaları Keşfet</button>
+                <button class="cta-btn" onclick="document.getElementById('rooms').scrollIntoView({behavior: 'smooth'})">Odaları Keşfet</button>
             </div>
         </div>
     </section>
@@ -87,24 +122,58 @@
     <section id="rooms" class="rooms-section">
         <div class="rooms-container">
             <h2>Odalarımız</h2>
-            
+
             <!-- filtrekeme işlemi -->
             <div class="filter-section">
-                <label for="priceFilter">Bütçeye Göre Filtre:</label>
-                <select id="priceFilter" onchange="filterRooms()">
-                    <option value="all">Tümü</option>
-                    <option value="budget">Bütçe Dostu (₺0-₺500)</option>
-                    <option value="standard">Standart (₺500-₺1000)</option>
-                    <option value="premium">Premium (₺1000-₺2000)</option>
-                    <option value="luxury">Lüks (₺2000+)</option>
-                </select>
+                <div class="price-filter-container">
+                    <label class="filter-label">Fiyat Aralığı:</label>
+                    <div class="price-inputs">
+                        <div class="price-input-group">
+                            <span class="currency-symbol">₺</span>
+                            <input type="number" id="minPrice" placeholder="Min" min="0" step="50" oninput="filterRooms()">
+                        </div>
+                        <span class="price-separator">-</span>
+                        <div class="price-input-group">
+                            <span class="currency-symbol">₺</span>
+                            <input type="number" id="maxPrice" placeholder="Max" min="0" step="50" oninput="filterRooms()">
+                        </div>
+                        <button class="clear-filter-btn" onclick="clearPriceFilter()" title="Filtreyi Temizle">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- oda resmi, oda adı, oda fiyatı ve detaylar gibi özellikler -->
             <div class="rooms-grid" id="roomsGrid"></div>
+            
+            <!-- Oda bulunamadı mesajı -->
+            <div class="no-rooms-message" id="noRoomsMessage" style="display: none;">
+                <div class="no-rooms-icon">
+                    <i class="fas fa-sad-tear"></i>
+                </div>
+                <h3>Üzgünüz, Size Yardımcı Olamıyoruz</h3>
+                <p>Belirttiğiniz fiyat aralığında uygun oda bulunamadı.</p>
+                <button class="reset-filter-btn" onclick="clearPriceFilter()">
+                    <i class="fas fa-redo"></i> Filtreyi Sıfırla
+                </button>
+            </div>
+        </div>
+    </section>
 
-            <!-- uzun bir oda listesinde kullanıcı yukarı çıkmadan sayfa değiştirebilsin diye footer kısmına yakın -->
-            <div class="pagination" id="paginationBottom"></div>
+    <!-- fiyat düzenleme sayfası -->
+    <section id="priceEdit" class="price-edit-section">
+        <div class="price-edit-container">
+            <div class="price-edit-header">
+                <button class="back-btn" onclick="closePriceEdit()">
+                    <i class="fas fa-arrow-left"></i> Geri Dön
+                </button>
+                <h2><i class="fas fa-edit"></i> Fiyat Düzenle</h2>
+                <p class="price-edit-subtitle">Oda fiyatlarını düzenleyin</p>
+            </div>
+            <div class="price-edit-content" id="priceEditContent">
+                <!-- buranın içeriğini çerik javascriptle doldurcam beklesin az -->
+            </div>
         </div>
     </section>
 
@@ -113,10 +182,12 @@
         <div class="about-container">
             <h2>Hakkımızda</h2>
             <p>Kış Prime Suites, 2025 yılında misafirlerimize unutulmaz bir konaklama deneyimi sunmak amacıyla kuruldu.
-            Bizim için en önemli şey, kapımızdan içeri adım atan herkesin kendini evinde hissetmesi.
-            Farklı bütçelere ve ihtiyaçlara uygun oda seçeneklerimizle, her yaştan ve her aileden misafirimizi aynı özenle ağırlıyoruz.
-            Kış Prime Suites ailesi olarak sizi rahat ettirmek, konfor sağlamak ve güzel anılar biriktirmenize yardımcı olmak için buradayız.</p>
-            
+                Bizim için en önemli şey, kapımızdan içeri adım atan herkesin kendini evinde hissetmesi.
+                Farklı bütçelere ve ihtiyaçlara uygun oda seçeneklerimizle, her yaştan ve her aileden misafirimizi aynı
+                özenle ağırlıyoruz.
+                Kış Prime Suites ailesi olarak sizi rahat ettirmek, konfor sağlamak ve güzel anılar biriktirmenize
+                yardımcı olmak için buradayız.</p>
+
             <div class="team-info">
                 <div class="team-member">
                     <h3>Baş Geliştirici</h3>
@@ -127,11 +198,135 @@
                     <p><a href="https://github.com/h1perss" target="_blank" class="team-link">Burak Emenli</a></p>
                 </div>
             </div>
-            
-            <div style="text-align: center; margin-top: 40px;">
-                <a href="iletisim.html" class="feedback-btn">
-                    <i class="fas fa-comment-dots"></i> Geri Bildirim Gönder
-                </a>
+
+        </div>
+    </section>
+
+    <!-- iletişim kısmı -->
+    <section id="contact" class="contact-section">
+        <div class="contact-background">
+            <div class="floating-shape shape-1"></div>
+            <div class="floating-shape shape-2"></div>
+            <div class="floating-shape shape-3"></div>
+        </div>
+        
+        <div class="contact-container">
+            <div class="contact-header">
+                <div class="header-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h1 class="contact-title">
+                    Bizimle <span class="title-highlight">İletişime Geçin</span>
+                </h1>
+                <p class="contact-subtitle">
+                    <i class="fas fa-quote-left"></i>
+                    Sorularınız, önerileriniz veya geri bildirimleriniz için buradayız
+                    <i class="fas fa-quote-right"></i>
+                </p>
+            </div>
+
+            <div class="contact-wrapper">
+                <div class="contact-form-wrapper">
+                    <div class="form-header">
+                        <h2><i class="fas fa-edit"></i> Mesaj Gönder</h2>
+                        <p>Formu doldur, mesajını gönder</p>
+                    </div>
+                    <form class="contact-form" onsubmit="sendFeedback(event)">
+                        <div class="form-group floating-label">
+                            <input type="text" id="contactName" name="name" placeholder=" " required>
+                            <label for="contactName">
+                                <i class="fas fa-user"></i> Ad Soyad
+                            </label>
+                            <span class="input-line"></span>
+                        </div>
+
+                        <div class="form-group floating-label">
+                            <input type="email" id="contactEmail" name="email" placeholder=" " required>
+                            <label for="contactEmail">
+                                <i class="fas fa-envelope"></i> E-posta
+                            </label>
+                            <span class="input-line"></span>
+                        </div>
+
+                        <div class="form-group floating-label">
+                            <select id="contactSubject" name="subject" onchange="handleSubjectChange()" required>
+                                <option value="" disabled selected></option>
+                                <option value="genel">Genel Soru</option>
+                                <option value="rezervasyon">Rezervasyon Hakkında</option>
+                                <option value="oneri">Öneri & İyileştirme</option>
+                                <option value="sikayet">Şikayet</option>
+                                <option value="teknik">Teknik Sorun</option>
+                                <option value="isbirligi">İş Birliği</option>
+                                <option value="ozel">Özel Konu</option>
+                            </select>
+                            <label for="contactSubject">
+                                <i class="fas fa-tag"></i> Konu
+                            </label>
+                            <span class="input-line"></span>
+                        </div>
+
+                        <div class="form-group floating-label" id="customSubjectGroup" style="display: none;">
+                            <input type="text" id="customSubject" name="customSubject" placeholder=" ">
+                            <label for="customSubject">
+                                <i class="fas fa-pencil-alt"></i> <span>Özel Konu Yazın</span>
+                            </label>
+                            <span class="input-line"></span>
+                        </div>
+
+                        <div class="form-group floating-label">
+                            <textarea id="contactMessage" name="message" rows="6" placeholder=" " required></textarea>
+                            <label for="contactMessage">
+                                <i class="fas fa-comment-alt"></i> Mesajınız
+                            </label>
+                            <span class="input-line"></span>
+                        </div>
+
+                        <button type="submit" class="submit-btn">
+                            <span>Gönder</span>
+                            <i class="fas fa-paper-plane"></i>
+                            <div class="btn-ripple"></div>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="contact-info-wrapper">
+                    <div class="info-header">
+                        <h2><i class="fas fa-info-circle"></i> İletişim Bilgileri</h2>
+                        <p>Bize ulaşmanın farklı yolları</p>
+                    </div>
+                    <div class="contact-info">
+                        <div class="info-card card-1">
+                            <div class="card-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>E-posta</h3>
+                                <a href="mailto:info@kprimesuites.com">info@kprimesuites.com</a>
+                            </div>
+                            <div class="card-shine"></div>
+                        </div>
+                        <div class="info-card card-2">
+                            <div class="card-icon">
+                                <i class="fab fa-whatsapp"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>WhatsApp</h3>
+                                <a href="https://wa.me/905314866552" target="_blank">Mesaj Gönder</a>
+                            </div>
+                            <div class="card-shine"></div>
+                        </div>
+                        <div class="info-card card-3">
+                            <div class="card-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="card-content">
+                                <h3>Telefon</h3>
+                                <a href="tel:+905314866552">+90 531 486 65 52</a>
+                            </div>
+                            <div class="card-shine"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -151,30 +346,104 @@
 
     <!-- giriş -->
     <div id="authModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content auth-modal">
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <h2>Hoş Geldiniz</h2>
+                <p class="modal-subtitle">Hesabınıza giriş yapın</p>
+            </div>
             <span class="close" onclick="toggleAuthModal()">&times;</span>
-            <h2>Giriş Yap</h2>
-            <form onsubmit="login(event)">
-                <input type="text" id="username" placeholder="Kullanıcı Adı" required>
-                <input type="password" id="password" placeholder="Şifre" required>
-                <button type="submit">Giriş Yap</button>
-                <p class="switch-auth">Hesabın yok mu? <a href="#" onclick="toggleSignup()">Kaydol</a></p>
+            <form onsubmit="login(event)" class="auth-form">
+                <div class="form-group floating-label">
+                    <input type="text" id="username" placeholder=" " required>
+                    <label for="username">
+                        <i class="fas fa-user"></i> Kullanıcı Adı
+                    </label>
+                    <span class="input-line"></span>
+                </div>
+                <div class="form-group floating-label">
+                    <input type="password" id="password" placeholder=" " required>
+                    <label for="password">
+                        <i class="fas fa-lock"></i> Şifre
+                    </label>
+                    <span class="input-line"></span>
+                </div>
+                <button type="submit" class="auth-submit-btn">
+                    <span>Giriş Yap</span>
+                    <i class="fas fa-arrow-right"></i>
+                    <div class="btn-ripple"></div>
+                </button>
+                <div class="auth-divider">
+                    <span>veya</span>
+                </div>
+                <p class="switch-auth">
+                    Hesabın yok mu?
+                    <a href="#" onclick="toggleSignup()">
+                        <span>Kaydol</span>
+                        <i class="fas fa-user-plus"></i>
+                    </a>
+                </p>
             </form>
         </div>
     </div>
 
     <!-- kaydol -->
     <div id="signupModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content auth-modal">
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h2>Hesap Oluştur</h2>
+                <p class="modal-subtitle">Yeni hesap oluşturun ve başlayın</p>
+            </div>
             <span class="close" onclick="toggleSignup()">&times;</span>
-            <h2>Kaydol</h2>
-            <form onsubmit="signup(event)">
-                <input type="text" id="signupUsername" placeholder="Kullanıcı Adı" required>
-                <input type="email" id="signupEmail" placeholder="Email" required>
-                <input type="password" id="signupPassword" placeholder="Şifre" required>
-                <input type="password" id="signupPasswordConfirm" placeholder="Şifre Tekrar" required>
-                <button type="submit">Kaydol</button>
-                <p class="switch-auth">Zaten hesabın var mı? <a href="#" onclick="toggleAuthModal(); toggleSignup();">Giriş Yap</a></p>
+            <form onsubmit="signup(event)" class="auth-form">
+                <div class="form-group floating-label">
+                    <input type="text" id="signupUsername" placeholder=" " required>
+                    <label for="signupUsername">
+                        <i class="fas fa-user"></i> Kullanıcı Adı
+                    </label>
+                    <span class="input-line"></span>
+                </div>
+                <div class="form-group floating-label">
+                    <input type="email" id="signupEmail" placeholder=" " required>
+                    <label for="signupEmail">
+                        <i class="fas fa-envelope"></i> E-posta
+                    </label>
+                    <span class="input-line"></span>
+                </div>
+                <div class="form-group floating-label">
+                    <input type="password" id="signupPassword" placeholder=" " required>
+                    <label for="signupPassword">
+                        <i class="fas fa-lock"></i> Şifre
+                    </label>
+                    <span class="input-line"></span>
+                </div>
+                <div class="form-group floating-label">
+                    <input type="password" id="signupPasswordConfirm" placeholder=" " required>
+                    <label for="signupPasswordConfirm">
+                        <i class="fas fa-lock"></i> Şifre Tekrar
+                    </label>
+                    <span class="input-line"></span>
+                </div>
+                <button type="submit" class="auth-submit-btn">
+                    <span>Kaydol</span>
+                    <i class="fas fa-arrow-right"></i>
+                    <div class="btn-ripple"></div>
+                </button>
+                <div class="auth-divider">
+                    <span>veya</span>
+                </div>
+                <p class="switch-auth">
+                    Zaten hesabın var mı?
+                    <a href="#" onclick="toggleAuthModal(); toggleSignup();">
+                        <span>Giriş Yap</span>
+                        <i class="fas fa-sign-in-alt"></i>
+                    </a>
+                </p>
             </form>
         </div>
     </div>
@@ -221,9 +490,11 @@
                 <div class="form-section">
                     <h3>Kart Bilgileri</h3>
                     <input type="text" id="cardholderName" placeholder="Kart Sahibinin Adı" required>
-                    <input type="text" id="cardNumber" placeholder="Kart Numarası (16 Haneli)" maxlength="19" required oninput="formatCardNumber(this)">
+                    <input type="text" id="cardNumber" placeholder="Kart Numarası (16 Haneli)" maxlength="19" required
+                        oninput="formatCardNumber(this)">
                     <div class="card-details">
-                        <input type="text" id="expiryDate" placeholder="MM/YY" maxlength="5" required oninput="formatExpiryDate(this)">
+                        <input type="text" id="expiryDate" placeholder="MM/YY" maxlength="5" required
+                            oninput="formatExpiryDate(this)">
                         <input type="text" id="cvv" placeholder="CVV" maxlength="3" required>
                     </div>
                 </div>
@@ -239,6 +510,35 @@
         </div>
     </div>
 
+    <!-- havalı adminler için mesaj paneli (evet havaliyiz) -->
+    <div id="messagesModal" class="modal">
+        <span class="close" onclick="closeMessagesPanel()">&times;</span>
+        <div class="modal-content messages-panel">
+            <div class="messages-header">
+                <h2><i class="fas fa-envelope-open-text"></i> Gelen Mesajlar</h2>
+                <p class="messages-subtitle">Müşterilerden gelen tüm mesajlar</p>
+            </div>
+            <div class="messages-container" id="messagesContainer">
+                <!-- mesajlari jsten donen degerle doldurcam bekleyedursun bura -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Çıkış Onay Paneli -->
+    <div id="logoutConfirmPanel" class="logout-confirm-panel">
+        <div class="logout-confirm-content">
+            <div class="logout-icon">
+                <i class="fas fa-sign-out-alt"></i>
+            </div>
+            <h3>Çıkış Yapmak İstediğinize Emin Misiniz?</h3>
+            <p>Çıkış yaptığınızda oturumunuz sonlandırılacak ve tekrar giriş yapmanız gerekecek.</p>
+            <div class="logout-actions">
+                <button class="logout-cancel-btn" onclick="closeLogoutConfirm()">İptal</button>
+                <button class="logout-confirm-btn" onclick="confirmLogout()">Çıkış Yap</button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
-</html>
+</html
